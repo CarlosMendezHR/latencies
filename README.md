@@ -181,6 +181,87 @@ The script defaults to Spanish (`language_code="es"`). To change:
 - Make sure you installed `assemblyai`: `pip3 install assemblyai`
 - Try upgrading: `pip3 install --upgrade assemblyai`
 
+## API / Web Deployment
+
+This project includes a FastAPI web API that can be deployed to Railway or run locally.
+
+### Local API Run
+
+1. Install dependencies:
+   ```bash
+   pip3 install -r requirements.txt
+   ```
+
+2. Set your API key:
+   ```bash
+   export ASSEMBLYAI_API_KEY='your-api-key-here'
+   ```
+
+3. Run the FastAPI server:
+   ```bash
+   uvicorn main:app --reload
+   ```
+
+   The API will be available at `http://localhost:8000`
+
+4. Test the API:
+   ```bash
+   curl -X POST "http://localhost:8000/analyze" \
+     -F "files=@path/to/audio1.mp3" \
+     -F "files=@path/to/audio2.mp4" \
+     -o summary.csv
+   ```
+
+### API Endpoints
+
+- **GET /** - Health check endpoint
+- **POST /analyze** - Upload audio files and get summary CSV
+  - Accepts multiple files via `multipart/form-data` with field name `files`
+  - Returns `summary_all_audios.csv` as downloadable file
+
+### Railway Deployment
+
+1. **Create Railway Account**
+   - Go to [railway.app](https://railway.app)
+   - Sign up/login with GitHub
+
+2. **Deploy from GitHub**
+   - Click "New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose this repository (`latencies`)
+
+3. **Configure Environment Variables**
+   - Go to your project settings
+   - Add environment variable:
+     - Name: `ASSEMBLYAI_API_KEY`
+     - Value: Your AssemblyAI API key
+
+4. **Configure Start Command**
+   - In Railway project settings, set the start command:
+     ```
+     uvicorn main:app --host 0.0.0.0 --port $PORT
+     ```
+   - Railway automatically sets the `$PORT` environment variable
+
+5. **Deploy**
+   - Railway will automatically detect `requirements.txt` and install dependencies
+   - The app will be deployed and you'll get a public URL
+
+6. **Test Your Deployment**
+   ```bash
+   curl -X POST "https://your-app.railway.app/analyze" \
+     -F "files=@audio.mp3" \
+     -o summary.csv
+   ```
+
+### API Error Responses
+
+The API returns friendly error messages for:
+- Missing `ASSEMBLYAI_API_KEY` environment variable
+- No files uploaded
+- Unsupported file types
+- Transcription failures (includes filename)
+
 ## Need Help?
 
 Check the AssemblyAI documentation: [https://www.assemblyai.com/docs](https://www.assemblyai.com/docs)

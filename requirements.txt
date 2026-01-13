@@ -1,0 +1,6 @@
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+assemblyai==0.48.4
+pydantic>=1.10.17
+httpx>=0.19.0
