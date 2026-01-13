@@ -15,6 +15,7 @@ from statistics import median
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import Response
+from fastapi.middleware.cors import CORSMiddleware
 import assemblyai as aai
 
 # Import constants and functions from the existing script
@@ -23,6 +24,16 @@ SUPPORTED_EXTENSIONS = latency_module.SUPPORTED_EXTENSIONS
 LANGUAGE_CODE = latency_module.LANGUAGE_CODE
 
 app = FastAPI(title="Latency Calculator API", version="1.0.0")
+
+# Add CORS middleware to allow cross-origin requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=False,
+    expose_headers=["Content-Disposition"]
+)
 
 
 def check_api_key() -> str:
